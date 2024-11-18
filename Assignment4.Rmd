@@ -1,0 +1,326 @@
+---
+title: "Assignment4"
+author: "Jason Chen"
+date: "2024-11-16"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+---
+
+# Completed {/10}
+
+# 1
+
+## a
+```{r}
+  set.seed(1)
+  bird <- read.csv("NZBIRDS.csv")
+  species <- bird[sample(1:nrow(bird), 35), ]
+```
+
+## b
+```{r}
+  mean <- mean(species$Body.Mass)
+  mean
+  sd <- sd(species$Body.Mass)
+  sd
+  t.test(bird$Body.Mass, mu = mean)
+```
+
+## c
+The confidence interval shows that 95% of body mass would be in the interval (3208.217, 13397.434).
+
+## d
+The true mean, $\mu = 9113$, is included in the interval. The interval is likely to contain the true mean because it was created with a high probability (95%).
+
+## e
+```{r}
+  mean <- mean(species$Egg.Length)
+  mean
+  sd <- sd(species$Egg.Length)
+  sd
+  t.test(bird$Egg.Length, mu = mean)
+```
+
+The confidence interval shows that 95% of egg length will be in the interval (58.02, 68.29).
+
+The true mean, $\mu = 61.06$, is included in the interval. The interval is likely to contain the true mean because it was created with a high probability (95%).
+
+## f
+```{r}
+  21/38 
+  7/78
+  qnorm(0.975)
+  qnorm(0.975)*sqrt(0.0075)
+```
+
+$$
+  (p_1-p_2) \pm Z_{\alpha-0.05} \sqrt{\frac{p_1(1-p_1)}{n_1}+\frac{p_2(1-p_2)}{n_2}} \newline
+  = (0.5526-0.0897) \pm 1.96 \sqrt{\frac{0.5526(0.4474)}{38}+\frac{0.0897(0.9103)}{78}} \newline
+  = 0.4629 \pm 1.96 \sqrt{0.0075} \newline
+  = 0.4629 \pm 0.1697 \newline
+  = [0.2932,0.6326]
+$$
+
+## g
+The confidence interval supports this theory because the interval is positive meaning the ratio of extinct flightless birds is greater than the ratio of nonextinct flightless birds.
+
+# 2
+
+## a
+```{r}
+  qnorm(0.95)
+```
+
+$$
+  (1312 - 1352) \pm 1.645 \sqrt{\frac{422^2}{100}+\frac{271^2}{47}} \newline
+  = -40 \pm 1.645 \sqrt{1780.84+1562.57} \newline
+  = -40 \pm 95.118 \newline
+  = [-135.118, 55.118]
+$$
+
+## b
+```{r}
+  qf(0.95, 99, 46)
+  qf(0.95, 46, 99)
+```
+
+$$
+  \frac{422^2}{271^2}*\frac{1}{1.548} \leq \frac{\sigma_1^2}{\sigma_2^2} \leq
+  \frac{422^2}{271^2}*{1.492}
+  \newline = 1.566 \leq \frac{\sigma_1^2}{\sigma_2^2} \leq 3.618
+$$
+
+# 3
+
+## a
+$$
+  Z = \frac{Y-\mu}{\sigma} = \frac{Y-0}{\sigma} = \frac{Y}{\sigma} \newline
+$$
+$Z^2 =  \frac{Y^2}{\sigma^2} \newline$ will have a chi-square distribution with 1 degree of freedom.
+
+## b
+$$
+  X^2_{1-\alpha/2} \leq \frac{Y^2}{\sigma^2} \leq X^2_{\alpha/2} \newline
+  = \frac{1}{X^2_{1-\alpha/2}} \geq \frac{\sigma^2}{Y^2} \geq \frac{1}{X^2_{\alpha/2}} \newline
+  = \frac{1}{X^2_{\alpha/2}} \leq \frac{\sigma^2}{Y^2} \leq \frac{1}{X^2_{1-\alpha/2}} \newline
+  = \frac{Y^2}{X^2_{\alpha/2}} \leq \sigma^2 \leq \frac{Y^2}{X^2_{1-\alpha/2}}
+$$
+
+# 4
+
+## a
+$$
+  H_0: \mu=2 \newline
+  H_a: \mu \neq 2
+$$
+
+## b
+Test statistic = -1.02. p-value = 0.322.
+
+## c
+The rejection region for this test is $t < -1.96$ and $t > 1.96$ because $t_{0.05/2}=1.96$.
+
+## d
+We fail to reject the null hypothesis.
+
+## e
+The confidence interval and test statistic lead to the same conclusion about $\mu$ because both are methods to make inferences about a hypothesized value.
+
+# 5
+
+## a
+```{r}
+  lake <- read.csv("WISCLAKES.csv")
+  mean(lake$DOC)
+  sd(lake$DOC)
+  qt(1-0.10/2, 25-1)
+```
+
+$$
+  \frac{14.516-15}{\frac{12.964}{\sqrt25}} \newline
+  = \frac{-0.484}{2.592} \newline
+  = -0.187
+$$
+
+## b
+$$
+  \mu \pm t(\frac{s}{\sqrt n}) = 15 \pm 1.71 (\frac{12.96}{\sqrt 25}) \newline
+  = 15 \pm 1.71 (2.59) \newline
+  = [10.57, 19.43] \newline
+  
+  \frac{10.57-14}{2.59}= -1.32 \newline
+  \frac{19.43-14}{2.59}= 2.1
+$$
+
+```{r}
+  pt(-1.32,24)
+  1-pt(2.1,24)
+```
+$$
+  P(t<-1.32)+(t>2.1) = 0.099 + 0.023 = 0.122
+$$
+
+# 6
+
+## a
+```{r}
+  orch <- read.csv("ORCHARD.csv")
+  library(dplyr)
+  dfog <- with(orch, orch[CONDITION == "FOG",])
+  dfclcloud <- with(orch, orch[CONDITION == "CLEAR" | CONDITION == "CLOUD",])
+  dfog
+  dfclcloud
+  F_RATIO <- subset(orch,CONDITION == "FOG", RATIO)
+  CC_RATIO <- subset(orch,CONDITION == "CLOUD" | CONDITION == "CLEAR", RATIO)
+  orch <- mutate(orch, Cond = recode(CONDITION, CLOUD = "CLCL", CLEAR = "CLCL"))
+  orch
+  
+  sd(na.omit(F_RATIO)$RATIO)
+  sd(CC_RATIO$RATIO)
+```
+
+$$
+  s^2_r = \frac{(7)0.1186^2 + (3)0.1865^2}{8+4-2} = 0.02028
+$$
+
+```{r}
+  mean(na.omit(F_RATIO)$RATIO)
+  mean(CC_RATIO$RATIO)
+```
+
+$$
+  \frac {(0.2738 - 0.4523) - 0}{\sqrt{0.02028(1/8+1/4)}} \newline
+  = -0.1785 / 0.0883
+  = -2.021
+$$
+
+# 7
+
+## a
+```{r}
+  gas <- read.csv("GASTURBINE.csv")
+  head(gas)
+  trad <- filter(gas, ENGINE == "Traditional")
+  aero <- filter(gas, ENGINE == "Aeroderiv")
+  var.test(trad$HEATRATE, aero$HEATRATE)
+  
+  qf(c(0.05/2, 1-0.05/2), 6, 38)
+  2652^2/1279^2
+```
+
+There is enough of a difference between traditional and aeroderivative engines' mean heat rates. 
+
+## b
+```{r}
+  adv <- filter(gas, ENGINE == "Advanced")
+  var.test(adv$HEATRATE, aero$HEATRATE)
+```
+
+There is enough of a difference between advanced and aeroderivative engines' mean heat rates.
+
+# 8
+
+## a
+$$
+  H_0: \frac{\sigma^2_1}{\sigma^2_2}=1 \newline
+  H_a: \frac{\sigma^2_1}{\sigma^2_2} \neq 1
+$$
+
+## b
+```{r}
+  gobi <- read.csv("GOBIANTS.csv")
+  head(gobi)
+  dry <- filter(gobi, Region == "Dry Steppe")
+  desert <- filter(gobi, Region == "Gobi Desert")
+  length(dry)
+  length(desert)
+  sd1 = sd(dry$AntSpecies)
+  sd1
+  sd2 = sd(desert$AntSpecies)
+  sd2
+```
+
+The test statistic is $\frac{21.307^2}{18.214^2} = 1.368$
+
+## c
+```{r}
+  qf(c(0.05/2,1-0.05/2),6,6)
+```
+
+## d
+```{r}
+  var.test(dry$AntSpecies, desert$AntSpecies)
+```
+
+p-value of the test is 0.7264
+
+## e
+The variance of the populations at the two sites are not the same.
+
+## f
+Conditions that are required to make the test results valid are samples are independent, large samples to prevent deviations, and the true variance of the populations are equal.
+
+# 9
+
+$$
+  H_0: \mu_1 -\mu_2 = 0 \newline
+  H_a: \mu_1 -\mu_2 \neq 0
+$$
+```{r}
+  thru <- read.csv("THRUPUT.csv")
+  human <- thru$HUMAN
+  auto <- thru$AUTO
+  (mean(human)-mean(auto))/((sd(human-auto))/sqrt(length(human)))
+  qt(c(0.05/2,1-0.05/2), 7)
+```
+
+The test statistic for the data lies outside the rejection region. So we reject the NULL Hypothesis that the mean time between humans and the automated method is equal.
+
+# 10
+```{r}
+set.seed(35); sam<-round(rnorm(30,mean=20,sd=3),3)
+
+myboot<-function(iter=10000,x,fun="mean",alpha=0.05,...){  #Notice where the ... is repeated in the code
+n=length(x)   #sample size
+
+y=sample(x,n*iter,replace=TRUE)
+rs.mat=matrix(y,nr=n,nc=iter,byrow=TRUE)
+xstat=apply(rs.mat,2,fun) # xstat is a vector and will have iter values in it 
+ci=quantile(xstat,c(alpha/2,1-alpha/2))# Nice way to form a confidence interval
+# A histogram follows
+# The object para will contain the parameters used to make the histogram
+para=hist(xstat,freq=FALSE,las=1,
+main=paste("Histogram of Bootstrap sample statistics","\n","alpha=",alpha," iter=",iter,sep=""),col = rainbow(n),...)
+
+# t-statistic for mean difference from 0
+t_stat <- qt(1-alpha/2, df=n-1)
+
+cit <- c(mean(x) - t_stat * (sd(x) / sqrt(n)), mean(x) + t_stat * (sd(x) / sqrt(n)))
+
+#mat will be a matrix that contains the data, this is done so that I can use apply()
+mat=matrix(x,nr=length(x),nc=1,byrow=TRUE)
+
+# Theoretical confidence interval (blue line)
+height1 <- max(para$density) * 0.2
+text(cit[1], height1, paste("(", round(cit[1], 2), sep = ""), col = "blue", cex = 2)
+text(cit[2], height1, paste(round(cit[2], 2), ")", sep = ""), col = "blue", cex = 2)
+
+#pte is the point estimate
+#This uses whatever fun is
+pte=apply(mat,2,fun)
+height2 <- max(para$density) * 0.1
+abline(v=pte,lwd=3,col="Black")# Vertical line
+segments(ci[1],0,ci[2],0,lwd=4)      #Make the segment for the ci
+text(ci[1],height2,paste("(",round(ci[1],2),sep=""),col="Red",cex=2)
+text(ci[2],height2,paste(round(ci[2],2),")",sep=""),col="Red",cex=2)
+
+# plot the point estimate 1/2 way up the density
+text(pte,max(para$density)/2,round(pte,2),cex=3)
+
+return(list(fun=fun,x=x,t=t_stat,ci = ci,cit = cit))# Some output to use if necessary
+}
+
+myboot(x=sam)
+```
